@@ -1,0 +1,4 @@
+attendees.csv
+*.db
+__pycache__/
+.vscode/
