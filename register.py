@@ -4,17 +4,14 @@ import os
 import tkinter as tk
 from tkinter import messagebox, ttk
 
-# CSV கோப்பின் பெயர்
 CSV_FILE = "attendees.csv"
 
-# கோப்பு இல்லை என்றால் Date & Time தலைப்புடன் புதிய கோப்பை உருவாக்குதல்
 if not os.path.exists(CSV_FILE):
     with open(CSV_FILE, mode="w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         writer.writerow(["ID", "Name", "Email", "Phone", "Registered Time"])
 
 
-# 1. Function to Register Attendee (நேரத்துடன் சேமிக்க)
 def register_attendee():
     name = name_entry.get().strip()
     email = email_entry.get().strip()
@@ -26,10 +23,8 @@ def register_attendee():
         )
         return
 
-    # தற்போதைய தேதி மற்றும் நேரத்தைப் பெறுதல் (எ.கா: 2026-10-07 14:30:45)
     registered_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # அடுத்த ID எண்ணைக் கண்டறிதல்
     next_id = 1
     if os.path.exists(CSV_FILE):
         with open(CSV_FILE, mode="r", encoding="utf-8") as file:
@@ -37,20 +32,17 @@ def register_attendee():
             if len(reader) > 1:
                 next_id = int(reader[-1][0]) + 1
 
-    # CSV கோப்பில் விவரங்கள் + நேரத்தைச் சேர்த்தல்
     with open(CSV_FILE, mode="a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         writer.writerow([next_id, name, email, phone, registered_time])
 
     messagebox.showinfo("Success", "Attendee Registered Successfully!")
 
-    # Input பாக்ஸ்களை காலியாக்குதல்
     name_entry.delete(0, tk.END)
     email_entry.delete(0, tk.END)
     phone_entry.delete(0, tk.END)
 
 
-# 2. Function to Delete Selected Attendee
 def delete_attendee(tree):
     selected_item = tree.selection()
 
@@ -83,13 +75,11 @@ def delete_attendee(tree):
         messagebox.showinfo("Success", "Attendee deleted successfully!")
 
 
-# 3. Function to View Data (Registered Time உட்பட பார்க்க)
 def view_attendees():
     view_window = tk.Toplevel(root)
     view_window.title("Registered Attendees List")
     view_window.geometry("700x380")
 
-    # Table (Treeview) உருவாக்கம் - Registered Time நெடுவரிசை சேர்க்கப்பட்டுள்ளது
     tree = ttk.Treeview(
         view_window,
         columns=("ID", "Name", "Email", "Phone", "Registered Time"),
@@ -110,7 +100,6 @@ def view_attendees():
 
     tree.pack(fill="both", expand=True, padx=10, pady=10)
 
-    # CSV கோப்பில் இருந்து தரவை ஏற்றுதல்
     if os.path.exists(CSV_FILE):
         with open(CSV_FILE, mode="r", encoding="utf-8") as file:
             reader = csv.reader(file)
@@ -119,7 +108,7 @@ def view_attendees():
                 if row:
                     tree.insert("", tk.END, values=row)
 
-    # Delete Button
+  
     delete_button = tk.Button(
         view_window,
         text="Delete Selected Attendee",
@@ -131,7 +120,6 @@ def view_attendees():
     delete_button.pack(pady=10)
 
 
-# 4. GUI Layout Creation
 root = tk.Tk()
 root.title("Event Registration System")
 root.geometry("400x350")
@@ -145,25 +133,24 @@ title_label = tk.Label(
 )
 title_label.pack(pady=10)
 
-# Name Input
+
 name_label = tk.Label(root, text="Full Name:", font=("Arial", 10), bg="#f0f0f0")
 name_label.pack(anchor="w", padx=40)
 name_entry = tk.Entry(root, width=40)
 name_entry.pack(pady=5)
 
-# Email Input
+
 email_label = tk.Label(root, text="Email:", font=("Arial", 10), bg="#f0f0f0")
 email_label.pack(anchor="w", padx=40)
 email_entry = tk.Entry(root, width=40)
 email_entry.pack(pady=5)
 
-# Phone Input
+
 phone_label = tk.Label(root, text="Phone Number:", font=("Arial", 10), bg="#f0f0f0")
 phone_label.pack(anchor="w", padx=40)
 phone_entry = tk.Entry(root, width=40)
 phone_entry.pack(pady=5)
 
-# Buttons
 submit_button = tk.Button(
     root,
     text="Register",
